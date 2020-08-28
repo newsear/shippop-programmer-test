@@ -78,7 +78,20 @@ function App() {
     return numbers;
   };
 
-  const binarySearch = (data, searchNumber) => {};
+  const linearSearch = (results, numbers, searchNumber) => {
+    for (let i = 0; i < numbers.length; i++) {
+      let result = `Round : ${i + 1} ===> `;
+      if (numbers[i] === searchNumber) {
+        result += `${numbers[i]} = ${searchNumber} found!!`;
+        results.push(result);
+        return results;
+      } else {
+        result += `${numbers[i]} != ${searchNumber}`;
+        results.push(result);
+      }
+    }
+    return results;
+  };
 
   const onButtonClick = async () => {
     clearState();
@@ -87,12 +100,12 @@ function App() {
     const numbers = listToNumbers(state.list);
     results.push(`List : [${numbers}]`);
 
-    const search = Number(state.search.trim());
-    results.push(`Search : ${search}`);
+    const searchNumber = Number(state.search.trim());
+    results.push(`Search : ${searchNumber}`);
 
     results.push("Result :::");
     if (state.type === "linear_search") {
-      //
+      results = linearSearch(results, numbers, searchNumber);
     } else if (state.type === "binary_Search") {
       //
     } else {
