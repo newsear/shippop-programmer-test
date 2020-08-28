@@ -78,7 +78,8 @@ function App() {
     return numbers;
   };
 
-  const linearSearch = (results, numbers, searchNumber) => {
+  const linearSearch = (numbers, searchNumber) => {
+    let results = [];
     for (let i = 0; i < numbers.length; i++) {
       let result = `Round : ${i + 1} ===> `;
       if (numbers[i] === searchNumber) {
@@ -93,6 +94,31 @@ function App() {
     return results;
   };
 
+  const binarySearch = (numbers, searchNumber) => {
+    let results = [];
+    let left = 0;
+    let right = numbers.length - 1;
+
+    for (let i = 0; left <= right; i++) {
+      let result = `Round : ${i + 1} ===> `;
+      let mid = Math.floor((left + right) / 2);
+
+      if (numbers[mid] > searchNumber) {
+        result += `${numbers[mid]} != ${searchNumber}`;
+        results.push(result);
+        right = mid - 1;
+      } else if (numbers[mid] < searchNumber) {
+        result += `${numbers[mid]} != ${searchNumber}`;
+        results.push(result);
+        left = mid + 1;
+      } else {
+        result += `${numbers[mid]} = ${searchNumber} found!!`;
+        results.push(result);
+        return results;
+      }
+    }
+  };
+
   const onButtonClick = async () => {
     clearState();
     let results = [];
@@ -105,9 +131,9 @@ function App() {
 
     results.push("Result :::");
     if (state.type === "linear_search") {
-      results = linearSearch(results, numbers, searchNumber);
-    } else if (state.type === "binary_Search") {
-      //
+      results = [...results, ...linearSearch(numbers, searchNumber)];
+    } else if (state.type === "binary_search") {
+      results = [...results, ...binarySearch(numbers, searchNumber)];
     } else {
       //
     }
