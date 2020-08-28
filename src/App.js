@@ -46,8 +46,17 @@ function App() {
     list: "",
     search: "",
     type: "linear_search",
-    data: [],
+    results: [],
   });
+
+  const clearState = () => {
+    setState({
+      list: "",
+      search: "",
+      type: "linear_search",
+      results: [],
+    });
+  };
 
   const onInputChange = (keyName, value) => {
     setState({ ...state, [keyName]: value });
@@ -57,8 +66,40 @@ function App() {
     setState({ ...state, type: value });
   };
 
-  const onButtonClick = () => {
-    console.log("state", state);
+  const updateResults = (results) => {
+    setState({ ...state, results });
+  };
+
+  const listToNumbers = (list) => {
+    const numbers = list
+      .replace(/ /g, "")
+      .split(",")
+      .map((item) => Number(item));
+    return numbers;
+  };
+
+  const binarySearch = (data, searchNumber) => {};
+
+  const onButtonClick = async () => {
+    clearState();
+    let results = [];
+
+    const numbers = listToNumbers(state.list);
+    results.push(`List : [${numbers}]`);
+
+    const search = Number(state.search.trim());
+    results.push(`Search : ${search}`);
+
+    results.push("Result :::");
+    if (state.type === "linear_search") {
+      //
+    } else if (state.type === "binary_Search") {
+      //
+    } else {
+      //
+    }
+
+    updateResults(results);
   };
 
   return (
@@ -96,9 +137,9 @@ function App() {
       </Row>
       <Spacer />
       <StyledList
-        header={<Label>Result</Label>}
+        header={<Label>Results</Label>}
         bordered
-        dataSource={state.data}
+        dataSource={state.results}
         renderItem={(item) => (
           <Item>
             <Text>{item}</Text>
