@@ -83,7 +83,7 @@ function App() {
     for (let i = 0; i < numbers.length; i++) {
       let result = `Round : ${i + 1} ===> `;
       if (numbers[i] === searchNumber) {
-        result += `${numbers[i]} = ${searchNumber} found!!`;
+        result += `${numbers[i]} = ${searchNumber} found !!`;
         results.push(result);
         return results;
       } else {
@@ -112,10 +112,42 @@ function App() {
         results.push(result);
         left = mid + 1;
       } else {
-        result += `${numbers[mid]} = ${searchNumber} found!!`;
+        result += `${numbers[mid]} = ${searchNumber} found !!`;
         results.push(result);
         return results;
       }
+    }
+  };
+
+  const bubbleSort = (numbers) => {
+    let results = [];
+    let isSorted = false;
+
+    for (let i = 0; i < numbers.length && !isSorted; i++) {
+      let result = `Round : ${i + 1} ===> `;
+      for (let j = 1; j < numbers.length - i; j++) {
+        isSorted = true;
+        if (numbers[j - 1] > numbers[j]) {
+          isSorted = false;
+          let temp = numbers[j];
+          numbers[j] = numbers[j - 1];
+          numbers[j - 1] = temp;
+        }
+      }
+      result += numbers;
+      results.push(result);
+    }
+    results[results.length - 1] += " sorted !!";
+    return results;
+  };
+
+  const isDisable = () => {
+    if (state.list && state.search) {
+      return false;
+    } else if (state.type === "bubble_sort" && state.list) {
+      return false;
+    } else {
+      return true;
     }
   };
 
@@ -135,7 +167,7 @@ function App() {
     } else if (state.type === "binary_search") {
       results = [...results, ...binarySearch(numbers, searchNumber)];
     } else {
-      //
+      results = [...results, ...bubbleSort(numbers)];
     }
 
     updateResults(results);
@@ -154,6 +186,7 @@ function App() {
         <Label>Search</Label>
         <StyledInput
           value={state.search}
+          disabled={state.type === "bubble_sort"}
           onChange={(e) => onInputChange("search", e.currentTarget.value)}
         />
       </Row>
@@ -168,7 +201,7 @@ function App() {
       <Row>
         <StyledButton
           type="primary"
-          disabled={!state.list || !state.search}
+          disabled={isDisable()}
           onClick={onButtonClick}
         >
           Search
