@@ -125,8 +125,8 @@ function App() {
 
     for (let i = 0; i < numbers.length && !isSorted; i++) {
       let result = `Round : ${i + 1} ===> `;
+      isSorted = true;
       for (let j = 1; j < numbers.length - i; j++) {
-        isSorted = true;
         if (numbers[j - 1] > numbers[j]) {
           isSorted = false;
           let temp = numbers[j];
