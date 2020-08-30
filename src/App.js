@@ -94,7 +94,7 @@ function App() {
     return results;
   };
 
-  const binarySearch = (numbers, searchNumber) => {
+  const binarySearchIterative = (numbers, searchNumber) => {
     let results = [];
     let left = 0;
     let right = numbers.length - 1;
@@ -116,6 +116,20 @@ function App() {
         results.push(result);
         return results;
       }
+    }
+  };
+
+  const binarySearchRecursive = (numbers, searchNumber, left, right) => {
+    let mid = Math.floor((left + right) / 2);
+
+    if (numbers[mid] > searchNumber) {
+      console.log(`${numbers[mid]} > ${searchNumber}`);
+      binarySearchRecursive(numbers, searchNumber, left, mid - 1);
+    } else if (numbers[mid] < searchNumber) {
+      console.log(`${numbers[mid]} < ${searchNumber}`);
+      binarySearchRecursive(numbers, searchNumber, mid + 1, right);
+    } else {
+      console.log(`${numbers[mid]} = ${searchNumber} at index ${mid}`);
     }
   };
 
@@ -164,8 +178,11 @@ function App() {
     results.push("Result :::");
     if (state.type === "linear_search") {
       results = [...results, ...linearSearch(numbers, searchNumber)];
-    } else if (state.type === "binary_search") {
-      results = [...results, ...binarySearch(numbers, searchNumber)];
+    } else if (state.type === "binary_search_iterative") {
+      results = [...results, ...binarySearchIterative(numbers, searchNumber)];
+    } else if (state.type === "binary_search_recursive") {
+      // TODO display results
+      binarySearchRecursive(numbers, searchNumber, 0, numbers.length - 1)
     } else {
       results = [...results, ...bubbleSort(numbers)];
     }
@@ -194,7 +211,8 @@ function App() {
         <Label>Search Type</Label>
         <StyledSelect value={state.type} onChange={onSelectChange}>
           <Option value="linear_search">Linear Search</Option>
-          <Option value="binary_search">Binary Search</Option>
+          <Option value="binary_search_iterative">Binary Search Iterative</Option>
+          <Option value="binary_search_recursive">Binary Search Recursive</Option>
           <Option value="bubble_sort">Bubble Sort</Option>
         </StyledSelect>
       </Row>
