@@ -133,6 +133,83 @@ function App() {
     }
   };
 
+  const swapInNumbers = (numbers, firstIndex, secondIndex) => {
+    numbers[firstIndex] += numbers[secondIndex];
+    numbers[secondIndex] = numbers[firstIndex] - numbers[secondIndex];
+    numbers[firstIndex] -= numbers[secondIndex];
+
+    return numbers;
+  };
+
+  const iterativeQuickSort = (numbers) => {
+    const initial = {
+      low: 0,
+      high: numbers.length - 1,
+    };
+
+    let queue = [initial];
+    let results = [];
+
+    for (let i = 1; queue.length !== 0; i++) {
+      let result = `Round : ${i} ===> `;
+
+      const { low, high } = queue.shift();
+      if (low === high) continue;
+      let pivot = Math.floor((low + high)  / 2)
+
+      numbers = swapInNumbers(numbers, pivot, high);
+      pivot = high
+      let moving = {
+        low,
+        high: high - 1,
+      };
+
+      for (; moving.low < moving.high; ) {
+        if (
+          numbers[moving.low] <= numbers[moving.pivot] &&
+          moving.low < high
+        ) {
+          moving.low++;
+        } else if (
+          numbers[moving.high] >= numbers[moving.pivot] &&
+          moving.high > low
+        ) {
+          moving.high--;
+        } else {
+          numbers = swapInNumbers(numbers, moving.low, moving.high);
+        }
+      }
+
+      numbers = swapInNumbers(numbers, moving.low, moving.pivot);
+      moving.pivot = moving.low;
+
+      console.log('moving.pivot', moving.pivot)
+
+      result += numbers;
+      results.push(result);
+
+      if (moving.pivot - 1 > low) {
+        const lowSpace = {
+          low,
+          high: moving.pivot - 1,
+          pivot: Math.floor((low + moving.pivot - 1) / 2),
+        };
+        queue.push(lowSpace);
+      }
+
+      if (moving.pivot + 1 < high) {
+        const highSpace = {
+          low: moving.pivot + 1,
+          high,
+          pivot: Math.floor((moving.pivot + 1 + high) / 2),
+        };
+        queue.push(highSpace);
+      }
+    }
+
+    return results;
+  };
+
   const bubbleSort = (numbers) => {
     let results = [];
     let isSorted = false;
@@ -143,9 +220,7 @@ function App() {
       for (let j = 1; j < numbers.length - i; j++) {
         if (numbers[j - 1] > numbers[j]) {
           isSorted = false;
-          let temp = numbers[j];
-          numbers[j] = numbers[j - 1];
-          numbers[j - 1] = temp;
+          numbers = swapInNumbers(numbers, j - 1, j);
         }
       }
       result += numbers;
@@ -155,10 +230,10 @@ function App() {
     return results;
   };
 
-  const isDisable = () => {
+  const isDisableButton = () => {
     if (state.list && state.search) {
       return false;
-    } else if (state.type === "bubble_sort" && state.list) {
+    } else if (state.type.includes("_sort") && state.list) {
       return false;
     } else {
       return true;
@@ -183,6 +258,8 @@ function App() {
     } else if (state.type === "recursive_binary_search") {
       // TODO display results
       recursiveBinarySearch(numbers, searchNumber, 0, numbers.length - 1);
+    } else if (state.type === "iterative_quick_sort") {
+      results = [...results, ...iterativeQuickSort(numbers)];
     } else {
       results = [...results, ...bubbleSort(numbers)];
     }
@@ -203,7 +280,7 @@ function App() {
         <Label>Search</Label>
         <StyledInput
           value={state.search}
-          disabled={state.type === "bubble_sort"}
+          disabled={state.type.includes("_sort")}
           onChange={(e) => onInputChange("search", e.currentTarget.value)}
         />
       </Row>
@@ -217,13 +294,14 @@ function App() {
           <Option value="recursive_binary_search">
             Recursive Binary Search
           </Option>
+          <Option value="iterative_quick_sort">Iterative Quick Sort</Option>
           <Option value="bubble_sort">Bubble Sort</Option>
         </StyledSelect>
       </Row>
       <Row>
         <StyledButton
           type="primary"
-          disabled={isDisable()}
+          disabled={isDisableButton()}
           onClick={onButtonClick}
         >
           Search
